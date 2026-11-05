@@ -1,0 +1,71 @@
+# Decap CMS – committee-friendly editor at /admin
+# Setup (once): host on Netlify, enable Identity + Git Gateway (invite editors by email),
+# OR change `backend` to github and add an OAuth proxy. See README.md.
+backend:
+  name: git-gateway
+  branch: main
+
+local_backend: true   # run `npx decap-server` next to `npm run dev` to try /admin locally without login
+
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: events
+    label: Events
+    folder: src/content/events
+    create: true
+    extension: md
+    slug: "{{slug}}"
+    summary: "{{title}} – {{date}}"
+    sortable_fields: [date, title]
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime, time_format: false, format: YYYY-MM-DD, date_format: YYYY-MM-DD }
+      - { label: End date (multi-day), name: endDate, widget: datetime, time_format: false, format: YYYY-MM-DD, date_format: YYYY-MM-DD, required: false }
+      - { label: Type, name: type, widget: select, options: [BRM, Ride, Challenge, Meeting, Other], default: Ride }
+      - { label: Venue / start point, name: venue, widget: string, required: false }
+      - { label: Distance (km), name: distanceKm, widget: number, value_type: float, required: false }
+      - { label: Fee, name: fee, widget: string, required: false, hint: 'e.g. ₹600 or Free' }
+      - { label: Registration link, name: registerUrl, widget: string, required: false }
+      - { label: Poster, name: poster, widget: image, required: false }
+      - { label: Short summary, name: summary, widget: text, required: false }
+      - { label: Draft (hide from site), name: draft, widget: boolean, default: false }
+      - { label: Details, name: body, widget: markdown }
+
+  - name: rewards
+    label: Rewards & recognitions
+    folder: src/content/rewards
+    create: true
+    extension: md
+    fields:
+      - { label: Headline, name: title, widget: string }
+      - { label: Member, name: member, widget: string }
+      - { label: Milestone, name: milestone, widget: string, hint: '25,000 km / Ironman / LRM 1200' }
+      - { label: Date, name: date, widget: datetime, time_format: false, format: YYYY-MM-DD, date_format: YYYY-MM-DD }
+      - { label: Photo, name: photo, widget: image, required: false }
+
+  - name: news
+    label: News & media
+    folder: src/content/news
+    create: true
+    extension: md
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime, time_format: false, format: YYYY-MM-DD, date_format: YYYY-MM-DD }
+      - { label: Summary, name: summary, widget: text, required: false }
+      - { label: External link, name: link, widget: string, required: false }
+      - { label: Source (newspaper / channel), name: source, widget: string, required: false }
+
+  - name: team
+    label: Team
+    folder: src/content/team
+    create: true
+    extension: json
+    format: json
+    fields:
+      - { label: Name, name: name, widget: string }
+      - { label: Role, name: role, widget: string }
+      - { label: Committee, name: committee, widget: string, default: 2024–2027 }
+      - { label: Display order, name: order, widget: number, default: 50 }
+      - { label: Photo, name: photo, widget: image, required: false }
